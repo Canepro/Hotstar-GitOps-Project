@@ -155,7 +155,7 @@ Click OK
 Pipeline:
 Definition : Pipeline script from SCM
 SCM : Git
-Repositories : https://github.com/arumullayaswanth/Hotstar-GitOps-project.git
+Repositories : https://github.com/ophircloud/Hotstar-GitOps-Project.git
 Branches to build : */master
 Script Path : eks-terraform/eks-jenkinsfile
 Apply
@@ -178,7 +178,7 @@ Click OK
 Pipeline:
 Definition : Pipeline script from SCM
 SCM : Git
-Repositories : https://github.com/arumullayaswanth/Hotstar-GitOps-project.git
+Repositories : https://github.com/ophircloud/Hotstar-GitOps-Project.git
 Branches to build : */master
 Script Path : ecr-terraform/ecr-jenkinfile
 Apply
@@ -213,7 +213,7 @@ Click OK
 Pipeline:
 Definition : Pipeline script from SCM
 SCM : Git
-Repositories : https://github.com/arumullayaswanth/Hotstar-GitOps-project.git
+Repositories : https://github.com/ophircloud/Hotstar-GitOps-Project.git
 Branches to build : */master
 Script Path : jenkinsfiles/hotstar
 Apply
