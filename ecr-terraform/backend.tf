@@ -7,7 +7,7 @@ terraform {
   }
 
   backend "s3" {
-    bucket = "hotstaremmanuel"
+    bucket = "hotstar-canepro1"
     key    = "ecr/terraform.tfstate"
     region = "us-east-1"
   }

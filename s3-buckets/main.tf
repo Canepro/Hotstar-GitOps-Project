@@ -3,11 +3,11 @@ provider "aws" {
 }
 
 resource "aws_s3_bucket" "bucket1" {
-  bucket = "hotstaremmanuel"
+  bucket = var.bucket1_name  # Use the variable here
 
   tags = {
-    Name        = "hotstaremmanuel"
-    Environment = "dev"
+    Name        = var.bucket1_name
+    Environment = var.environment
   }
 }
 
@@ -19,11 +19,11 @@ resource "aws_s3_bucket_versioning" "bucket1_versioning" {
 }
 
 resource "aws_s3_bucket" "bucket2" {
-  bucket = "hotstaremma"
+  bucket = var.bucket2_name  # Use the variable here
 
   tags = {
-    Name        = "hotstaremma"
-    Environment = "dev"
+    Name        = var.bucket2_name
+    Environment = var.environment
   }
 }
 
