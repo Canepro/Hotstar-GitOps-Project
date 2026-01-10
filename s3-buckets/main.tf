@@ -3,7 +3,8 @@ provider "aws" {
 }
 
 resource "aws_s3_bucket" "bucket1" {
-  bucket = var.bucket1_name  # Use the variable here
+  bucket        = var.bucket1_name  # Use the variable here
+  force_destroy = true  # Allows bucket deletion even when it contains objects
 
   tags = {
     Name        = var.bucket1_name
@@ -19,7 +20,8 @@ resource "aws_s3_bucket_versioning" "bucket1_versioning" {
 }
 
 resource "aws_s3_bucket" "bucket2" {
-  bucket = var.bucket2_name  # Use the variable here
+  bucket        = var.bucket2_name  # Use the variable here
+  force_destroy = true  # Allows bucket deletion even when it contains objects
 
   tags = {
     Name        = var.bucket2_name
