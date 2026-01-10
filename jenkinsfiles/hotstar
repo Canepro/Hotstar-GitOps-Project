@@ -9,7 +9,7 @@ pipeline {
         }
         stage('Checkout from Git') {
             steps {
-                git branch: 'master', url: 'https://github.com/arumullayaswanth/Hotstar-GitOps-project.git'
+                git branch: 'master', url: 'https://github.com/ophircloud/Hotstar-GitOps-Project.git'
             }
         }
         stage("List Files") {
@@ -45,8 +45,8 @@ pipeline {
         stage('Update Deployment file') {
             environment {
                 GIT_REPO_NAME = "Hotstar-GitOps-project"
-                GIT_EMAIL = "Yaswanth.arumulla@gmail.com"
-                GIT_USER_NAME = "arumullayaswanth"
+                GIT_EMAIL = "irerua@zohomail.com"
+                GIT_USER_NAME = "ophircloud"
                 IMAGE_NAME = "hotstar"
                 REPO_URL = "884394270268.dkr.ecr.us-east-1.amazonaws.com/hotstar"
                 YAML_FILE = "deployment.yml"
