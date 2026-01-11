@@ -5,7 +5,7 @@ provider "aws" {
 
  #Creating IAM role for EKS
   resource "aws_iam_role" "master" {
-    name = "canepro-eks-master1"
+    name = "hotstar-iam-eks-master"
 
     assume_role_policy = jsonencode({
       "Version": "2012-10-17",
@@ -37,7 +37,7 @@ provider "aws" {
   }
 
   resource "aws_iam_role" "worker" {
-    name = "canepro-eks-worker1"
+    name = "hotstar-iam-eks-worker"
 
     assume_role_policy = jsonencode({
       "Version": "2012-10-17",
@@ -54,7 +54,7 @@ provider "aws" {
   }
 
   resource "aws_iam_policy" "autoscaler" {
-    name = "canepro-eks-autoscaler-policy1"
+    name = "hotstar-iam-eks-autoscaler"
     policy = jsonencode({
       "Version": "2012-10-17",
       "Statement": [
@@ -107,14 +107,14 @@ provider "aws" {
 
   resource "aws_iam_instance_profile" "worker" {
     depends_on = [aws_iam_role.worker]
-    name       = "canepro-eks-worker-new-profile1"
+    name       = "hotstar-iam-instance-profile-eks"
     role       = aws_iam_role.worker.name
   }
  
  # data source 
  data "aws_vpc" "main" {
   tags = {
-    Name = "Jumphost-vpc"  # Specify the name of your existing VPC
+    Name = "hotstar-vpc-dev"  # Specify the name of your existing VPC
   }
 }
 
@@ -122,7 +122,7 @@ data "aws_subnet" "subnet-1" {
  vpc_id = data.aws_vpc.main.id
  filter {
     name = "tag:Name"
-    values = ["Public-Subnet-1"]
+    values = ["hotstar-subnet-public-1"]
  }
 }
 
@@ -130,29 +130,29 @@ data "aws_subnet" "subnet-2" {
  vpc_id = data.aws_vpc.main.id
  filter {
     name = "tag:Name"
-    values = ["Public-subnet2"]
+    values = ["hotstar-subnet-public-2"]
  }
 }
 data "aws_security_group" "selected" {
   vpc_id = data.aws_vpc.main.id
   filter {
     name = "tag:Name"
-    values = ["Jumphost-sg"]
+    values = ["hotstar-sg"]
  }
 }
 
  #Creating EKS Cluster
   resource "aws_eks_cluster" "eks" {
-    name     = "project-eks"
+    name     = "hotstar-eks-dev"
     role_arn = aws_iam_role.master.arn
 
     vpc_config {
       subnet_ids = [data.aws_subnet.subnet-1.id, data.aws_subnet.subnet-2.id]
     }
 
-    tags = {
-      "Name" = "MyEKS"
-    }
+    tags = merge(local.common_tags, {
+      Name = "hotstar-eks"
+    })
 
     depends_on = [
       aws_iam_role_policy_attachment.AmazonEKSClusterPolicy,
@@ -176,9 +176,9 @@ data "aws_security_group" "selected" {
       env = "dev"
     }
 
-    tags = {
-      Name = "project-eks-node-group"
-    }
+    tags = merge(local.common_tags, {
+      Name = "hotstar-eks-nodegroup"
+    })
 
     scaling_config {
       desired_size = 2

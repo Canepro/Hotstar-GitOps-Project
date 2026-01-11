@@ -11,7 +11,7 @@ resource "aws_instance" "ec2" {
   }
   user_data = templatefile("./install-tools.sh", {})
 
-  tags = {
+  tags = merge(local.common_tags, {
     Name = var.instance_name
-  }
+  })
 }

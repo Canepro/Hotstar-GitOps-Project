@@ -4,17 +4,17 @@ resource "aws_vpc" "vpc" {
   enable_dns_support   = true
   enable_dns_hostnames = true
 
-  tags = {
+  tags = merge(local.common_tags, {
     Name = var.vpc-name
-  }
+  })
 }
 
 resource "aws_internet_gateway" "igw" {
   vpc_id = aws_vpc.vpc.id
 
-  tags = {
+  tags = merge(local.common_tags, {
     Name = var.igw-name
-  }
+  })
 }
 
 resource "aws_subnet" "public-subnet1" {
@@ -23,9 +23,9 @@ resource "aws_subnet" "public-subnet1" {
   availability_zone       = "us-east-1a"
   map_public_ip_on_launch = true
 
-  tags = {
+  tags = merge(local.common_tags, {
     Name = var.subnet-name1
-  }
+  })
 }
 resource "aws_subnet" "public-subnet2" {
   vpc_id                  = aws_vpc.vpc.id
@@ -33,9 +33,9 @@ resource "aws_subnet" "public-subnet2" {
   availability_zone       = "us-east-1b"
   map_public_ip_on_launch = true
 
-  tags = {
+  tags = merge(local.common_tags, {
     Name = var.subnet-name2
-  }
+  })
 }
 
 resource "aws_subnet" "private-subnet1" {
@@ -44,9 +44,9 @@ resource "aws_subnet" "private-subnet1" {
   availability_zone       = "us-east-1a"
   map_public_ip_on_launch = false
 
-  tags = {
+  tags = merge(local.common_tags, {
     Name = var.private_subnet_name1
-  }
+  })
 }
 
 resource "aws_subnet" "private-subnet2" {
@@ -55,9 +55,9 @@ resource "aws_subnet" "private-subnet2" {
   availability_zone       = "us-east-1b"
   map_public_ip_on_launch = false
 
-  tags = {
+  tags = merge(local.common_tags, {
     Name = var.private_subnet_name2
-  }
+  })
 }
 
 
@@ -68,9 +68,9 @@ resource "aws_route_table" "rt" {
     gateway_id = aws_internet_gateway.igw.id
   }
 
-  tags = {
+  tags = merge(local.common_tags, {
     Name = var.rt-name
-  }
+  })
 }
 
 resource "aws_route_table_association" "rt-association" {
@@ -86,9 +86,9 @@ resource "aws_route_table_association" "rt-association2" {
 resource "aws_route_table" "private_rt" {
   vpc_id = aws_vpc.vpc.id
 
-  tags = {
-    Name = "Private-RT"
-  }
+  tags = merge(local.common_tags, {
+    Name = "hotstar-rt-private"
+  })
 }
 
 resource "aws_route_table_association" "private_rt_association1" {
@@ -126,7 +126,7 @@ resource "aws_security_group" "security-group" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  tags = {
+  tags = merge(local.common_tags, {
     Name = var.sg-name
-  }
+  })
 }

@@ -1,5 +1,5 @@
 resource "aws_iam_policy" "eks_policy" {
-  name        = "eks_policy"
+  name        = "hotstar-iam-eks-policy"
   description = "Custom policy for EKS full access"
   policy      = <<EOF
 {
