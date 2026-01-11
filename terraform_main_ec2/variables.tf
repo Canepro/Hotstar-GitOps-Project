@@ -13,7 +13,7 @@ variable "region" {
 variable "vpc-name" {
   description = "VPC Name for our Jumphost server"
   type        = string
-  default     = "Jumphost-vpc"
+  default     = "hotstar-vpc"
 }
 
 variable "igw-name" {

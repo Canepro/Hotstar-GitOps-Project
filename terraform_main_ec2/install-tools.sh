@@ -1,8 +1,9 @@
 #!/bin/bash
-set -e          # Exit on error
-set -o pipefail # Exit on pipe failures
-
 sudo yum update -y
+
+# NOTE: Trainer script uses wget + unzip, but Amazon Linux 2023 can be minimal.
+# Install prereqs so the trainer script works reliably on AL2023.
+sudo yum install -y wget unzip
 
 #---------------git install ---------------
 
@@ -40,8 +41,8 @@ sudo yum -y install terraform
 sudo yum install maven -y
 
 #---------------------------kubectl install ---------------
-# Install latest stable kubectl version
-curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+# Trainer version (pinned kubectl)
+sudo curl -o kubectl https://amazon-eks.s3.us-west-2.amazonaws.com/1.19.6/2021-01-05/bin/linux/amd64/kubectl
 sudo chmod +x ./kubectl
 sudo mv ./kubectl /usr/local/bin 
 # -----------------------------eksctl install--------------------------------
@@ -49,8 +50,15 @@ sudo curl --silent --location "https://github.com/weaveworks/eksctl/releases/lat
 sudo mv /tmp/eksctl /usr/local/bin
 
 #---------------------------Helm install--------------------
-# Install latest Helm version using official script
-curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+# https://github.com/helm/helm/releases
+
+wget https://get.helm.sh/helm-v3.6.0-linux-amd64.tar.gz
+
+tar -zxvf helm-v3.6.0-linux-amd64.tar.gz
+
+sudo mv linux-amd64/helm /usr/local/bin/helm
+
+chmod 777 /usr/local/bin/helm  # give permissions
 
 #------------------Docker install-------------
 #sudo amazon-linux-extras install docker #linux 2022
@@ -59,8 +67,7 @@ sudo usermod -aG docker ec2-user
 sudo usermod -aG docker jenkins 
 newgrp docker
 sudo service docker start
-# Docker group membership (set above) should be sufficient after service restart
-# Removed: sudo chmod 777 /var/run/docker.sock (overly permissive)
+sudo chmod 777 /var/run/docker.sock
 
 
 
@@ -74,18 +81,6 @@ sudo rpm -ivh https://github.com/aquasecurity/trivy/releases/download/v0.48.3/tr
 
 #------------------sonar install by using docker---------------
 docker run -d --name sonar -p 9000:9000 sonarqube:lts-community
-
-
-
-#---------------------------ArgoCD----------------
-kubectl create namespace argocd
-kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
-
-#----------------Grafana Prometheus-------------------
-helm repo add stable https://charts.helm.sh/stable
-helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
-kubectl create namespace Prometheus
-helm install stable prometheus-community/kube-prometheus-stack -n prometheus
 
 echo "Initialization script completed successfully."
 
@@ -119,3 +114,13 @@ curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip
 sudo yum install unzip -y
 unzip awscliv2.zip
 sudo ./aws/install
+
+#---------------------------ArgoCD----------------
+kubectl create namespace argocd
+kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+
+#----------------Grafana Prometheus-------------------
+helm repo add stable https://charts.helm.sh/stable
+helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+kubectl create namespace Prometheus
+helm install stable prometheus-community/kube-prometheus-stack -n prometheus
