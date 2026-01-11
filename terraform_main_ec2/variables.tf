@@ -62,9 +62,9 @@ variable "iam-role" {
 }
 
 variable "ami_id" {
-  description = "AMI ID for the EC2 instance"
+  description = "AMI ID for the EC2 instance. Leave empty to use latest Amazon Linux 2023 AMI automatically."
   type        = string
-  default     = "ami-07ff62358b87c7116" // Replace with the latest AMI ID for your region
+  default     = "" # Empty = use data.aws_ami.amazon_linux.id (dynamic lookup)
 }
 
 variable "instance_type" {

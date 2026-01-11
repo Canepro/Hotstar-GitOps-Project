@@ -1,4 +1,7 @@
 #!/bin/bash
+set -e          # Exit on error
+set -o pipefail # Exit on pipe failures
+
 sudo yum update -y
 
 #---------------git install ---------------
@@ -37,7 +40,8 @@ sudo yum -y install terraform
 sudo yum install maven -y
 
 #---------------------------kubectl install ---------------
-sudo curl -o kubectl https://amazon-eks.s3.us-west-2.amazonaws.com/1.19.6/2021-01-05/bin/linux/amd64/kubectl
+# Install latest stable kubectl version
+curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
 sudo chmod +x ./kubectl
 sudo mv ./kubectl /usr/local/bin 
 # -----------------------------eksctl install--------------------------------
@@ -45,15 +49,8 @@ sudo curl --silent --location "https://github.com/weaveworks/eksctl/releases/lat
 sudo mv /tmp/eksctl /usr/local/bin
 
 #---------------------------Helm install--------------------
-#https://github.com/helm/helm/releases
-
-wget https://get.helm.sh/helm-v3.6.0-linux-amd64.tar.gz
-
-tar -zxvf helm-v3.6.0-linux-amd64.tar.gz
-
-sudo mv linux-amd64/helm /usr/local/bin/helm
-
-chmod 777 /usr/local/bin/helm  # give permissions
+# Install latest Helm version using official script
+curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
 
 #------------------Docker install-------------
 #sudo amazon-linux-extras install docker #linux 2022
@@ -62,7 +59,8 @@ sudo usermod -aG docker ec2-user
 sudo usermod -aG docker jenkins 
 newgrp docker
 sudo service docker start
-sudo chmod 777 /var/run/docker.sock
+# Docker group membership (set above) should be sufficient after service restart
+# Removed: sudo chmod 777 /var/run/docker.sock (overly permissive)
 
 
 
@@ -118,6 +116,6 @@ sudo systemctl enable mariadb
 #----------------AWS CLI Installation-----------------------
 
 curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-sudo apt install unzip
+sudo yum install unzip -y
 unzip awscliv2.zip
 sudo ./aws/install

@@ -17,3 +17,10 @@ spec:
         image: 534208808141.dkr.ecr.us-east-1.amazonaws.com/hotstar:1
         ports:
         - containerPort: 3000  # Port your application listens on
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "128Mi"
+          limits:
+            cpu: "500m"
+            memory: "512Mi"

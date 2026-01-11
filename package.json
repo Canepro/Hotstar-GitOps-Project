@@ -2,6 +2,8 @@
   "name": "hotstar-clone",
   "version": "0.1.0",
   "private": true,
+  "packageManager": "bun",
+  "description": "Hotstar Clone - supports both bun and npm. Use 'bun install' or 'npm install' for dependencies.",
   "dependencies": {
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",

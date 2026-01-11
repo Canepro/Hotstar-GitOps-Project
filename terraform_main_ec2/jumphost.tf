@@ -1,5 +1,6 @@
 resource "aws_instance" "ec2" {
-  ami                    = var.ami_id
+  # Use dynamic AMI lookup, or override with var.ami_id if specified
+  ami                    = var.ami_id != "" ? var.ami_id : data.aws_ami.amazon_linux.id
   instance_type          = var.instance_type
   key_name               = var.key_name
   subnet_id              = aws_subnet.public-subnet1.id
