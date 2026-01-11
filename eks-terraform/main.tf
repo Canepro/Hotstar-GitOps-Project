@@ -211,3 +211,29 @@ resource "aws_iam_openid_connect_provider" "eks_oidc" {
   thumbprint_list = [data.tls_certificate.oidc_thumbprint.certificates[0].sha1_fingerprint]
   url             = data.aws_eks_cluster.eks_oidc.identity[0].oidc[0].issuer
 }
+
+# --- EKS Access Entry for cluster admin access ---
+# Get current caller identity to grant access to whoever runs Terraform
+data "aws_caller_identity" "current" {}
+
+# Create access entry for the current IAM principal
+resource "aws_eks_access_entry" "admin" {
+  cluster_name  = aws_eks_cluster.eks.name
+  principal_arn = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:user/Canepro"
+  type          = "STANDARD"
+
+  depends_on = [aws_eks_cluster.eks]
+}
+
+# Associate cluster admin policy
+resource "aws_eks_access_policy_association" "admin" {
+  cluster_name  = aws_eks_cluster.eks.name
+  principal_arn = aws_eks_access_entry.admin.principal_arn
+  policy_arn    = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
+
+  access_scope {
+    type = "cluster"
+  }
+
+  depends_on = [aws_eks_access_entry.admin]
+}
