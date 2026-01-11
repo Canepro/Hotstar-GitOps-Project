@@ -111,10 +111,10 @@ provider "aws" {
     role       = aws_iam_role.worker.name
   }
  
- # data source 
- data "aws_vpc" "main" {
+# data source 
+data "aws_vpc" "main" {
   tags = {
-    Name = "hotstar-vpc-dev"  # Specify the name of your existing VPC
+    Name = "hotstar-vpc"  # Specify the name of your existing VPC
   }
 }
 
