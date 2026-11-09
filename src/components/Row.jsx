@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react'
-import tmdbAxiosInstance from '../tmdbAxiosInstance'
+import tmdbAxiosInstance, { hasTmdbApiKey } from '../tmdbAxiosInstance'
 import './Row.css'
 function Row({title,fetchUrl}) {
 const [allMovies,setAllMovies]=useState([])
-console.log(fetchUrl);
+
 const base_url="https://image.tmdb.org/t/p/original/"
 
 const fetchData=async()=>{
+   if (!hasTmdbApiKey) return;
    const {data}= await tmdbAxiosInstance.get(fetchUrl)
    setAllMovies(data.results)
 }

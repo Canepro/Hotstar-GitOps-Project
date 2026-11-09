@@ -4,3 +4,8 @@
 .terraform.lock.hcl
 *.pem
 REVIEW.md
+
+# Runtime configuration stays outside Git.
+.env
+.env.*
+!.env.example
