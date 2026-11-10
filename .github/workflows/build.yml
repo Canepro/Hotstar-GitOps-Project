@@ -20,18 +20,40 @@ jobs:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
         with:
           persist-credentials: false
-      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6.5.0
         with:
           node-version: '24'
           cache: npm
       - run: npm ci --ignore-scripts --no-audit
       - name: Build without movie-data configuration
-        run: npm run build
+        run: |
+          npm run build
+          ! grep -R -q -- 'synthetic-movie-read-config' build/static/js
         env:
           CI: 'false'
           REACT_APP_TMDB_API_KEY: ''
       - name: Build with a noncredential configuration marker
-        run: npm run build
+        run: |
+          npm run build
+          grep -R -q -- 'synthetic-movie-read-config' build/static/js
         env:
           CI: 'false'
           REACT_APP_TMDB_API_KEY: synthetic-movie-read-config
+      - name: Verify Docker excludes local configuration and Git history
+        shell: bash
+        run: |
+          set -euo pipefail
+          printf '%s\n' 'noncredential-context-probe' > .env
+          printf '%s\n' 'noncredential-context-probe' > .env.local
+          docker buildx build --file - \
+            --output "type=local,dest=$RUNNER_TEMP/context-proof" . <<'DOCKERFILE'
+          FROM scratch
+          COPY . /
+          DOCKERFILE
+          test ! -e "$RUNNER_TEMP/context-proof/.env"
+          test ! -e "$RUNNER_TEMP/context-proof/.env.local"
+          test ! -e "$RUNNER_TEMP/context-proof/.git"
+          test ! -e "$RUNNER_TEMP/context-proof/node_modules"
+          test ! -e "$RUNNER_TEMP/context-proof/build"
+          test -f "$RUNNER_TEMP/context-proof/.env.example"
+          test -f "$RUNNER_TEMP/context-proof/src/request.jsx"

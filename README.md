@@ -222,3 +222,5 @@ Save
 
 
 
+
+Movie-data configuration: [TMDB configuration](docs/tmdb-configuration.md).
